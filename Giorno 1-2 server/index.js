@@ -6,11 +6,11 @@ const server = http.createServer((req, res) => {
 
     if(pathName === '/' || pathName === '/overview') {
         res.end('This is the OVERVIEW');
-    } else if (pathName === 'product') {
+    } else if (pathName === '/product') {
         res.end('This is the PRODUCT');
     } else {
         res.writeHead(404, {
-            'Content-type': 'test/html',
+            'Content-type': 'text/html',
             'my-own-header': 'hello-world'
         })
 
