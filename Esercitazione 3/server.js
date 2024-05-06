@@ -4,13 +4,12 @@ require('dotenv').config({path: './config.env'});
 const animaliRouter = require('./routes/animaliRoute');
 
 const app = express();
+app.use(express.json());
 
 const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
 
 mongoose
-    .connect(DB, {
-        
-    })
+    .connect(DB)
     .then( () => console.log('DB connection: success!'));
 
 app.use('/api/v1/animali', animaliRouter);
