@@ -1,10 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const petRouter = require('./routes/petRouter')
+const petRouter = require('./routes/petRouter');
 require('dotenv').config({path: './config.env'});
+const cors = require('cors');
 
 const app = express();
 app.use(express.json());
+app.use(cors({
+    origin:'http://localhost:5173',
+    methods: ['GET']
+}));
 
 const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
 
