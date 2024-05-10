@@ -3,6 +3,7 @@ import './App.css'
 import Homepage from './pages/Homepage'
 import NavbarComp from './components/NavbarComp'
 import FooterComp from './components/FooterComp'
+import Create from './pages/Create'
 
 function App() {
 
@@ -12,6 +13,7 @@ function App() {
         <NavbarComp />
           <Routes>
             <Route path='/' element={<Homepage />} />
+            <Route path='/create' element={<Create />} />
           </Routes>
         <FooterComp />
       </BrowserRouter>

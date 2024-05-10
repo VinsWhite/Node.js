@@ -22,3 +22,12 @@ h5 {
     color: rgb(170, 170, 249);
     text-shadow: rgb(214, 211, 211) 1px 0 10px;
 }
+
+.bi-plus {
+    cursor: pointer;
+    transition: transform 0.3s ease; 
+}
+
+.bi-plus:hover {
+    transform: scale(1.2);
+}

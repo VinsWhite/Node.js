@@ -4,6 +4,7 @@ const petController = require('../controller/petController');
 const petRouter = express.Router('/pet');
 
 petRouter.route('/')
-    .get(petController.getAllPet);
+    .get(petController.getAllPet)
+    .post(petController.createAPet);
 
 module.exports = petRouter;
