@@ -1,27 +1,22 @@
-import { Container, Row, Col, Card } from "react-bootstrap";
-import cartoonDog from '../../assets/img/cartoonDog.png';
+import { Container, Row, Col } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Plus } from "react-bootstrap-icons";
-
-// interfaccia struttura dati
-interface Pet {
-    id: number;
-    name: string;
-    description: string;
-    species: string;
-}
+import { Pet } from "../../assets/interface/PetInterface"; //  Pet is an interface
+import PetCard from "./PetCard";
 
 export default function ServicesComp() {
-    const [pets, setPets] = useState<Pet[]>([]); // <Pet[]> specifica che il tipo di stato sarà un array di oggetti dell'interfaccia Pet
-
+    const [pets, setPets] = useState<Pet[]>([]); // <Pet[]> specify what state type is, interface array of Pet
+    const [loading, setLoading] = useState(true);
+    
     useEffect(() => {
         async function fetchData() {
           try {
-            const response = await axios.get<{ data: { pet: Pet[] } }>('http://localhost:3000/pet'); // specifica il tipo di dati attesi
+            const response = await axios.get<{ data: { pet: Pet[] } }>('http://localhost:3000/pet'); // specify the type
             console.log(response.data);
-            setPets(response.data.data.pet); // impostiamo lo stato
+            setPets(response.data.data.pet); // set the state
+            setLoading(false);
           } catch (error) {
             console.error(error);
           }
@@ -38,18 +33,12 @@ export default function ServicesComp() {
 
             <Container className="my-3">
                 <Row>
+                    {loading && (
+                        <p>loading (just for now)...</p>
+                    )}
                     {pets.map((pet, index) => (
                         <Col key={index} xs={12} sm={6} md={4}>
-                            <NavLink to='#' className='text-decoration-none'>
-                                <Card className="text-center services mt-3 shadow">
-                                    <Card.Body>
-                                        <img src={cartoonDog} alt="dog" />
-                                        <Card.Title className="fw-semibold mt-3 fs-3">{pet.name}</Card.Title>
-                                        <Card.Text>{pet.description}</Card.Text>
-                                        <Card.Text className="text-primary">{pet.species}</Card.Text>
-                                    </Card.Body>
-                                </Card>
-                            </NavLink>
+                            <PetCard pet={pet}/>
                         </Col>
                     ))}
                 </Row>

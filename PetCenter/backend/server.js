@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 app.use(cors({
     origin:'http://localhost:5173',
-    methods: ['GET']
+    methods: ['GET', 'POST']
 }));
 
 const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);

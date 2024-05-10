@@ -31,3 +31,7 @@ h5 {
 .bi-plus:hover {
     transform: scale(1.2);
 }
+
+.cont {
+    height: 100dvh;
+}
