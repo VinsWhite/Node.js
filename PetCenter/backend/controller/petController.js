@@ -40,3 +40,27 @@ exports.createAPet = async (req, res) => {
     }
 
 }
+
+exports.deleteAPet = async (req, res) => {
+    try {
+
+        const pet = await Pet.findByIdAndDelete (req.params.id);
+        
+        if (!pet) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'Pet not found'
+            });
+        }
+
+        res.status(201).json ({
+            status: 'success'
+        })
+
+    } catch (err) {
+        res.status(404).json ({
+            status: 'fail',
+            message: err.message
+        })
+    }
+}

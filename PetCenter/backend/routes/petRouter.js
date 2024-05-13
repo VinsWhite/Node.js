@@ -7,4 +7,7 @@ petRouter.route('/')
     .get(petController.getAllPet)
     .post(petController.createAPet);
 
+petRouter.route('/:id')
+    .delete(petController.deleteAPet);
+
 module.exports = petRouter;
