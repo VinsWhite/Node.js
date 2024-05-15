@@ -17,5 +17,5 @@ app.use('/api/v1/animali', animaliRouter);
 const port = process.env.PORT;
 
 app.listen(port, () => {
-    console.log('App running...')
+    console.log(`App running on port ${port}...`)
 })

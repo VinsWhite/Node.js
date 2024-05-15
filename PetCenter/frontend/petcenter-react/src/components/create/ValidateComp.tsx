@@ -4,6 +4,8 @@ import { scrollToTop } from "../../assets/functions/scrollToTop";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Toast } from 'primereact/toast';
+import { Checkbox } from 'primereact/checkbox';
+import { Info } from "react-bootstrap-icons";
 
 export default function ValidateComp() {
 
@@ -12,11 +14,12 @@ export default function ValidateComp() {
     const [name, setName] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [species, setSpecies] = useState<string>('');
+    const [isCreated, setIsCreated] = useState<boolean>();
+    const [checked, setChecked] = useState<boolean>(false);
     const navigate = useNavigate();
     const toast = useRef<Toast>(null);
 
     useEffect(() => {
-
         // to scroll to top
         scrollToTop();
     }, [])
@@ -38,10 +41,12 @@ export default function ValidateComp() {
                 species: species
             });
 
+            setIsCreated(true);
             toast.current?.show({ severity: 'info', summary: 'Created', detail: 'Pet created successfully', life: 3000 });
             console.log(response.data);
             setTimeout(() => {
                 navigate('/');
+                setIsCreated(false);
             }, 2000);
             
         } catch (error) {
@@ -59,8 +64,15 @@ export default function ValidateComp() {
   return (
     <>
         <h2 className="mt-4">Set informations about a new Pet!</h2>
+        {isCreated && (
+            <p className='opacity-75'>You will be redirected shortly...</p>
+        )}
         <Form noValidate validated={validated} onSubmit={handleSubmit} className="my-5 p-2 border border-2 border-warning rounded-2 shadow">
             <Row className="mb-3">
+            <div className="d-flex">
+                <Checkbox onChange={() => setChecked(checked)} checked={checked}></Checkbox>
+                <p><Info /> More pets</p>
+            </div>
                 <Form.Group as={Col} md="4" controlId="validationCustom01">
                     <Form.Label>Name</Form.Label>
                         <Form.Control

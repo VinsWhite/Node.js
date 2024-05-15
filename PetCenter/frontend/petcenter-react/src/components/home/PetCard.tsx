@@ -3,23 +3,24 @@ import { Card } from 'react-bootstrap';
 import { Pet } from '../../assets/interface/PetInterface';
 import { Trash } from 'react-bootstrap-icons';
 import axios from 'axios';
+import { Toast} from 'primereact/toast';
+import { useRef } from 'react';
 
 interface PetCardProps {
     pet: Pet;
+    onDelete: (petId: number) => void;
 }
 
-const PetCard: React.FC<PetCardProps> = ({ pet }) => {
+const PetCard: React.FC<PetCardProps> = ({ pet, onDelete }) => {
+    const toast = useRef<Toast>(null);
 
     const handleClick = async () => {
         try {
             const response = await axios.delete(`http://localhost:3000/pet/${pet._id}`);
-            if (response.status === 200) {
-                // Handle successful deletion
-                console.log('Pet deleted successfully');
-            } else {
-                // Handle other status codes if needed
-                console.error('Deletion failed');
-            }
+            // Handle successful deletion
+            console.log('Pet deleted successfully', response.data);
+            toast.current?.show({ severity: 'info', summary: 'Deleted', detail: 'Pet deleted successfully', life: 3000 });
+            onDelete(pet._id);
         } catch (error) {
             // Handle error
             console.error('Error deleting pet:', error);

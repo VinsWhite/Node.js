@@ -5,6 +5,7 @@ import axios from "axios";
 import { Plus } from "react-bootstrap-icons";
 import { Pet } from "../../assets/interface/PetInterface"; //  Pet is an interface
 import PetCard from "./PetCard";
+import { Skeleton } from 'primereact/skeleton';
 
 export default function ServicesComp() {
     const [pets, setPets] = useState<Pet[]>([]); // <Pet[]> specify what state type is, interface array of Pet
@@ -15,8 +16,13 @@ export default function ServicesComp() {
           try {
             const response = await axios.get<{ data: { pet: Pet[] } }>('http://localhost:3000/pet'); // specify the type
             console.log(response.data);
-            setPets(response.data.data.pet); // set the state
+
+            setTimeout(() => {
+                setPets(response.data.data.pet); // set the state
             setLoading(false);
+            }, 3000);
+
+            
           } catch (error) {
             console.error(error);
           }
@@ -24,6 +30,12 @@ export default function ServicesComp() {
     
         fetchData();
     }, []);
+
+    const handleDeletePet = (petId: number) => {
+        // Filtra i pet rimuovendo quello con l'ID corrispondente
+        const updatedPets = pets.filter(pet => pet._id !== petId);
+        setPets(updatedPets); // Aggiorna lo stato con i pet aggiornati
+    };
 
     return (
         <>  
@@ -34,13 +46,33 @@ export default function ServicesComp() {
             <Container className="my-3">
                 <Row>
                     {loading && (
-                        <p>loading (just for now)...</p>
+                        <>
+                            <Col xs={12} sm={6} md={4}>
+                                <Skeleton width="22rem" height="11rem"></Skeleton>
+                            </Col>
+                            <Col xs={12} sm={6} md={4}>
+                                <Skeleton width="22rem" height="11rem"></Skeleton>
+                            </Col>
+                            <Col xs={12} sm={6} md={4}>
+                                <Skeleton width="22rem" height="11rem"></Skeleton>
+                            </Col>
+                        </>
                     )}
-                    {pets.map((pet, index) => (
+                    {pets.length >= 1 && pets.map((pet, index) => (
                         <Col key={index} xs={12} sm={6} md={4}>
-                            <PetCard pet={pet}/>
+                            <PetCard pet={pet} onDelete={handleDeletePet}/>
                         </Col>
                     ))}
+                    {!loading && pets.length == 0 && (
+                        <>
+                            <Container>
+                                <div className="text-center border border-dark rounded-4 p-4 services mx-3">
+                                    <h2>There aren't pets yet...</h2>
+                                    <p>Be the first one! Let's create a card!</p>
+                                </div>
+                            </Container>
+                        </>
+                    )}
                 </Row>
             </Container>
         </>
