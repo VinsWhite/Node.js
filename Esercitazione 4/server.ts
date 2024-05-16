@@ -1,5 +1,5 @@
 import express, {Request, Response} from 'express';
-const productRoute = require('./route/productRoute')
+import router from './route/productRouter'
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
@@ -13,7 +13,7 @@ mongoose.connect(DB!)
     .then(() => console.log('DB connected'))
     .catch((error) => console.error('DB ERROR 💣: ', error));
 
-app.use('/api/v1/product', productRoute);
+app.use('/api/v1/product', router);
 
 /* app.get('/', (req: Request, res: Response) => {
     console.log('Pagina iniziale');
