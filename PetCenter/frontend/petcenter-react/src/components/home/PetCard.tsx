@@ -9,9 +9,10 @@ import { useRef } from 'react';
 interface PetCardProps {
     pet: Pet;
     onDelete: (petId: number) => void;
+    deleteCheckBox: boolean;
 }
 
-const PetCard: React.FC<PetCardProps> = ({ pet, onDelete }) => {
+const PetCard: React.FC<PetCardProps> = ({ pet, onDelete, deleteCheckBox }) => {
     const toast = useRef<Toast>(null);
 
     const handleClick = async () => {
@@ -30,9 +31,9 @@ const PetCard: React.FC<PetCardProps> = ({ pet, onDelete }) => {
     return (
         <>
             <NavLink to="#" className="text-decoration-none">
-                <Card className="text-center services mt-3 shadow">
+            <Card className={`text-center services mt-3 shadow ${deleteCheckBox ? 'constantWiggle' : ''}`}>
                     <Card.Body>
-                        <p onClick={handleClick} className="text-danger d-flex justify-content-end">
+                        <p onClick={handleClick} className={`text-dark d-flex justify-content-end ${deleteCheckBox ? 'visibility-visible' : 'visibility-hidden'}`} >
                             <Trash />
                         </p>
                         <Card.Title className="fw-semibold mt-3 fs-3">{pet.name}</Card.Title>

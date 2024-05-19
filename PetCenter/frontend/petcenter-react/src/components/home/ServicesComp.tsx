@@ -9,7 +9,8 @@ import { Skeleton } from 'primereact/skeleton';
 
 export default function ServicesComp() {
     const [pets, setPets] = useState<Pet[]>([]); // <Pet[]> specify what state type is, interface array of Pet
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [deleteCheckBox, setDeleteCheckBox] = useState<boolean>(false);
     
     useEffect(() => {
         async function fetchData() {
@@ -44,6 +45,12 @@ export default function ServicesComp() {
             </div>
 
             <Container className="my-3">
+                <p 
+                    className="bg-light border p-1 rounded-2 mb-2 d-inline-block"
+                    onClick={() => setDeleteCheckBox(!deleteCheckBox)}
+                >
+                    Delete
+                </p>
                 <Row>
                     {loading && (
                         <>
@@ -60,7 +67,7 @@ export default function ServicesComp() {
                     )}
                     {pets.length >= 1 && pets.map((pet, index) => (
                         <Col key={index} xs={12} sm={6} md={4}>
-                            <PetCard pet={pet} onDelete={handleDeletePet}/>
+                            <PetCard pet={pet} deleteCheckBox={deleteCheckBox} onDelete={handleDeletePet}/>
                         </Col>
                     ))}
                     {!loading && pets.length == 0 && (

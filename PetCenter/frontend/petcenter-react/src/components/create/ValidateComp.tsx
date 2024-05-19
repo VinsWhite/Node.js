@@ -1,4 +1,4 @@
-import { Form, Row, Col, Button } from "react-bootstrap";
+import { Form, Row, Col, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useEffect, useRef, useState } from "react";
 import { scrollToTop } from "../../assets/functions/scrollToTop";
 import axios from "axios";
@@ -44,10 +44,16 @@ export default function ValidateComp() {
             setIsCreated(true);
             toast.current?.show({ severity: 'info', summary: 'Created', detail: 'Pet created successfully', life: 3000 });
             console.log(response.data);
-            setTimeout(() => {
-                navigate('/');
+
+            if(checked) {
                 setIsCreated(false);
-            }, 2000);
+            } else {
+                setTimeout(() => {
+                    navigate('/');
+                    setIsCreated(false);
+                }, 2000);
+            }
+            
             
         } catch (error) {
             console.error(error);
@@ -59,22 +65,33 @@ export default function ValidateComp() {
         setDescription('');
         setSpecies('');
     }
-    
 
-  return (
-    <>
-        <h2 className="mt-4">Set informations about a new Pet!</h2>
-        {isCreated && (
-            <p className='opacity-75'>You will be redirected shortly...</p>
-        )}
-        <Form noValidate validated={validated} onSubmit={handleSubmit} className="my-5 p-2 border border-2 border-warning rounded-2 shadow">
-            <Row className="mb-3">
-            <div className="d-flex">
-                <Checkbox onChange={() => setChecked(checked)} checked={checked}></Checkbox>
-                <p><Info /> More pets</p>
-            </div>
-                <Form.Group as={Col} md="4" controlId="validationCustom01">
-                    <Form.Label>Name</Form.Label>
+    return (
+        <>
+            <h2 className="mt-4">Set informations about a new Pet!</h2>
+            {isCreated && (
+                <p className='opacity-75'>You will be redirected shortly...</p>
+            )}
+            <Form noValidate validated={validated} onSubmit={handleSubmit} className="my-5 p-2 border border-2 border-warning rounded-2 shadow">
+                <Row className="mb-3">
+                    <div className="d-flex">
+                        <Checkbox onChange={() => setChecked(!checked)} checked={checked}></Checkbox>
+                        <OverlayTrigger
+                            placement="top"
+                            overlay={
+                                <Tooltip id={`tooltip-info`}>
+                                    Tick this box if you intend to create several pets promptly
+                                </Tooltip>
+                            }
+                        >
+                            <p className="d-flex align-items-center ">
+                                <Info className="bg-dark text-light mx-1" />
+                                More pets
+                            </p>
+                        </OverlayTrigger>
+                    </div>
+                    <Form.Group as={Col} md="4" controlId="validationCustom01">
+                        <Form.Label>Name</Form.Label>
                         <Form.Control
                             required
                             type="text"
@@ -82,11 +99,11 @@ export default function ValidateComp() {
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
-                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                </Form.Group>
+                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                    </Form.Group>
 
-                <Form.Group as={Col} md="4" controlId="validationCustom02">
-                    <Form.Label>Description</Form.Label>
+                    <Form.Group as={Col} md="4" controlId="validationCustom02">
+                        <Form.Label>Description</Form.Label>
                         <Form.Control
                             required
                             type="text"
@@ -94,11 +111,11 @@ export default function ValidateComp() {
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                         />
-                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                </Form.Group>
-                
-                <Form.Group as={Col} md="4" controlId="validationCustom02">
-                    <Form.Label>Species</Form.Label>
+                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                    </Form.Group>
+
+                    <Form.Group as={Col} md="4" controlId="validationCustom02">
+                        <Form.Label>Species</Form.Label>
                         <Form.Control
                             required
                             type="text"
@@ -106,13 +123,12 @@ export default function ValidateComp() {
                             value={species}
                             onChange={(e) => setSpecies(e.target.value)}
                         />
-                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                </Form.Group>
-                
-            </Row>
-            <Button className="wiggle" variant="warning" type="submit">Create</Button>
-        </Form>
-        <Toast ref={toast} />
-    </>
-  )
+                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                    </Form.Group>
+                </Row>
+                <Button className="wiggle" variant="warning" type="submit">Create</Button>
+            </Form>
+            <Toast ref={toast} />
+        </>
+    )
 }
