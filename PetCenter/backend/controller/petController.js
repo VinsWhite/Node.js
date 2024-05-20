@@ -64,3 +64,31 @@ exports.deleteAPet = async (req, res) => {
         })
     }
 }
+
+exports.editAPet = async (req, res) => {
+    try {
+        const pet = await Pet.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true
+        });
+        
+        if (!pet) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'Pet not found'
+            });
+        }
+
+        res.status(201).json ({
+            status: 'success',
+            data: {
+                pet
+            }
+        })
+    } catch (err) {
+        res.status(404).json ({
+            status: 'fail',
+            message: err.message
+        })
+    }
+}

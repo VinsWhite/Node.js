@@ -87,10 +87,20 @@ h5 {
     }
   }
 
-.visibility-hidden {
-  visibility: hidden;
+.delete, .edit {
+  user-select: none;
+  cursor: pointer;
 }
 
-.visibility-visible {
-  visibility: visible;
+.delete:hover {
+  background-color: rgb(241, 241, 239) !important;
+}
+
+.edit:hover {
+  background-color: rgb(241, 241, 239) !important;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
 }
