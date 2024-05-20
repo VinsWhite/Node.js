@@ -1,10 +1,10 @@
 import { NavLink } from 'react-router-dom';
-import { Card } from 'react-bootstrap';
+import { Card, Modal, Button, Form, Row, Col, InputGroup } from 'react-bootstrap';
 import { Pet } from '../../assets/interface/PetInterface';
 import { Pen, Trash } from 'react-bootstrap-icons';
 import axios from 'axios';
-import { Toast} from 'primereact/toast';
-import { useRef } from 'react';
+import { Toast } from 'primereact/toast';
+import { useRef, useState, useEffect } from 'react';
 
 interface PetCardProps {
     pet: Pet;
@@ -15,34 +15,123 @@ interface PetCardProps {
 
 const PetCard: React.FC<PetCardProps> = ({ pet, onDelete, deleteCheckBox, editCheckBox }) => {
     const toast = useRef<Toast>(null);
+    const [show, setShow] = useState<boolean>(false);
+    const [validated, setValidated] = useState(false);
+
+    // state for form fields
+    const [name, setName] = useState(pet.name);
+    const [species, setSpecies] = useState(pet.species);
+    const [description, setDescription] = useState(pet.description);
+
+    useEffect(() => {
+        if (show) {
+            setName(pet.name);
+            setSpecies(pet.species);
+            setDescription(pet.description);
+        }
+    }, [show, pet]);
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        console.log('handleSubmit called');
+
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+            setValidated(true);
+            return;
+        }
+
+        try {
+            const response = await axios.patch(`http://localhost:3000/pet/${pet._id}`, {
+                name,
+                species,
+                description
+            });
+            console.log('Pet updated successfully', response.data);
+            toast.current?.show({ severity: 'success', summary: 'Updated', detail: 'Pet updated successfully', life: 3000 });
+            setShow(false);
+        } catch (error) {
+            console.error('Error updating pet: ', error);
+            toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Failed to update pet', life: 3000 });
+        }
+    };
+
+    const handleClose = () => setShow(false);
 
     const handleDelete = async () => {
         try {
             const response = await axios.delete(`http://localhost:3000/pet/${pet._id}`);
-            // Handle successful deletion
             console.log('Pet deleted successfully', response.data);
             toast.current?.show({ severity: 'info', summary: 'Deleted', detail: 'Pet deleted successfully', life: 3000 });
             onDelete(pet._id);
         } catch (error) {
-            // Handle error
             console.error('Error deleting pet: ', error);
         }
     };
 
-    // i need to open a modal first!!
-    const handleEdit = async () => {
-        try {
-            const response = await axios.patch(`http://localhost:3000/pet/${pet._id}`);
-            console.log(response.data);
-        } catch (error) {
-            console.error('Error editing pet: ', error)
-        }
-    }
+    const handleEdit = () => {
+        setShow(true);
+    };
 
     return (
         <>
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title className='fw-bold'>Edit {pet.name}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                        <Row className="mb-3">
+                            <Form.Group as={Col} md="6" controlId="validationCustom01">
+                                <Form.Label>Name</Form.Label>
+                                <Form.Control
+                                    required
+                                    type="text"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                />
+                                <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group as={Col} md="6" controlId="validationCustom02">
+                                <Form.Label>Species</Form.Label>
+                                <Form.Control
+                                    required
+                                    type="text"
+                                    value={species}
+                                    onChange={(e) => setSpecies(e.target.value)}
+                                />
+                                <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group as={Col} md="12" controlId="validationCustomDescription">
+                                <Form.Label>Description</Form.Label>
+                                <InputGroup hasValidation>
+                                    <Form.Control
+                                        type="text"
+                                        value={description}
+                                        onChange={(e) => setDescription(e.target.value)}
+                                        required
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        Please provide a description.
+                                    </Form.Control.Feedback>
+                                </InputGroup>
+                            </Form.Group>
+                        </Row>
+                        <Button variant="warning" className='text-light' type="submit">
+                            Save Changes
+                        </Button>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
             <NavLink to="#" className="text-decoration-none">
-            <Card className={`text-center services mt-3 shadow position-relative ${editCheckBox ? 'constantWiggle' : ''} ${deleteCheckBox ? 'constantWiggle' : ''}`}>
+                <Card className={`text-center services mt-3 shadow position-relative ${editCheckBox ? 'constantWiggle' : ''} ${deleteCheckBox ? 'constantWiggle' : ''}`}>
                     <Card.Body>
                         <p onClick={handleDelete} className={`text-dark d-flex position-absolute top-0 end-0 p-1 justify-content-end ${deleteCheckBox ? 'd-block' : 'd-none'}`}>
                             <Trash />
