@@ -20,12 +20,14 @@ exports.getAllPet = async (req, res) => {
 }
 
 exports.createAPet = async (req, res) => {
-    
     try {
+        const { name, description, species } = req.body;
 
-        const pet = await Pet.create(req.body);
+        const imagePath = req.file ? req.file.path : '';
 
-        res.status(201).json ({
+        const pet = await Pet.create({ name, description, species, imagePath });
+
+        res.status(201).json({
             status: 'success',
             data: {
                 pet
@@ -33,13 +35,13 @@ exports.createAPet = async (req, res) => {
         })
 
     } catch (err) {
-        res.status(404).json ({
+        res.status(404).json({
             status: 'fail',
             message: err.message
         })
     }
-
 }
+
 
 exports.deleteAPet = async (req, res) => {
     try {

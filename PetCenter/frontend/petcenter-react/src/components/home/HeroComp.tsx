@@ -1,5 +1,5 @@
 import { Container, Row, Col } from "react-bootstrap";
-import coolDog from '../../assets/img/cooldog.png';
+import cartoonCat from '../../assets/img/cartoonCat.png';
 
 export default function HeroComp() {
   return (
@@ -11,7 +11,7 @@ export default function HeroComp() {
                     <h2 className="fw-semibold">Play with these adorable pets</h2>
                 </Col>
                 <Col xs={4}>
-                    <img src={coolDog} alt="cool dog hero" />
+                    <img src={cartoonCat} alt="cool dog hero" />
                 </Col>
             </Row>
         </Container>

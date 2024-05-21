@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const petRouter = require('./routes/petRouter');
 require('dotenv').config({path: './config.env'});
 const cors = require('cors');
+const multer = require('multer');
+const path = require('path');
 
 const app = express();
 app.use(express.json());
@@ -15,12 +17,31 @@ const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSW
 
 mongoose 
     .connect(DB)
-    .then( () => console.log('DB connected!') );
+    .then(() => console.log('DB connected!'))
+    .catch(err => console.error('DB connection error:', err));
+
+// Configura multer per il caricamento delle immagini nella cartella 'uploads'
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+    }
+});
+
+const upload = multer({ storage: storage });
+
+// Middleware di multer per il caricamento delle immagini
+app.post('/upload', upload.single('image'), (req, res) => {
+    // Ritorna il percorso dell'immagine caricata
+    res.json({ imagePath: req.file.path });
+});
 
 app.use('/pet', petRouter);
 
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
-    console.log('App running...')
-})
+    console.log(`App running on port ${port}`);
+});

@@ -39,6 +39,11 @@ export default function ServicesComp() {
         setPets(updatedPets); // Aggiorna lo stato con i pet aggiornati
     };
 
+    const handleUpdatePet = (updatedPet: Pet) => {
+        setPets(pets => pets.map(pet => pet._id === updatedPet._id ? updatedPet : pet));
+    };
+    
+
     return (
         <>  
             <div className="p-5">
@@ -75,7 +80,13 @@ export default function ServicesComp() {
                     )}
                     {pets.length >= 1 && pets.map((pet, index) => (
                         <Col key={index} xs={12} sm={6} md={4}>
-                            <PetCard pet={pet} editCheckBox={editCheckBox} deleteCheckBox={deleteCheckBox} onDelete={handleDeletePet}/>
+                            <PetCard
+                                pet={pet} 
+                                editCheckBox={editCheckBox} 
+                                deleteCheckBox={deleteCheckBox} 
+                                onDelete={handleDeletePet}
+                                onUpdate={handleUpdatePet}
+                            />
                         </Col>
                     ))}
                     {!loading && pets.length == 0 && (

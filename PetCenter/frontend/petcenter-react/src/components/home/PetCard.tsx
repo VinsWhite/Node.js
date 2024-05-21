@@ -9,11 +9,12 @@ import { useRef, useState, useEffect } from 'react';
 interface PetCardProps {
     pet: Pet;
     onDelete: (petId: number) => void;
+    onUpdate: (updatedPet: Pet) => void;
     deleteCheckBox: boolean;
     editCheckBox: boolean;
 }
 
-const PetCard: React.FC<PetCardProps> = ({ pet, onDelete, deleteCheckBox, editCheckBox }) => {
+const PetCard: React.FC<PetCardProps> = ({ pet, onDelete, deleteCheckBox, editCheckBox, onUpdate }) => {
     const toast = useRef<Toast>(null);
     const [show, setShow] = useState<boolean>(false);
     const [validated, setValidated] = useState(false);
@@ -24,39 +25,38 @@ const PetCard: React.FC<PetCardProps> = ({ pet, onDelete, deleteCheckBox, editCh
     const [description, setDescription] = useState(pet.description);
 
     useEffect(() => {
-        if (show) {
-            setName(pet.name);
-            setSpecies(pet.species);
-            setDescription(pet.description);
+        if (!show) {
+            onUpdate({ ...pet, name, species, description });
         }
-    }, [show, pet]);
+    }, [show]);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         event.stopPropagation();
-
-        console.log('handleSubmit called');
-
+    
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
             setValidated(true);
             return;
         }
-
+    
         try {
             const response = await axios.patch(`http://localhost:3000/pet/${pet._id}`, {
                 name,
                 species,
                 description
             });
-            console.log('Pet updated successfully', response.data);
+            const updatedPet = response.data;
             toast.current?.show({ severity: 'success', summary: 'Updated', detail: 'Pet updated successfully', life: 3000 });
             setShow(false);
+            onUpdate(updatedPet);
         } catch (error) {
             console.error('Error updating pet: ', error);
             toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Failed to update pet', life: 3000 });
         }
     };
+    
+    
 
     const handleClose = () => setShow(false);
 
