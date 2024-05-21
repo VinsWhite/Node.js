@@ -145,6 +145,7 @@ const PetCard: React.FC<PetCardProps> = ({ pet, onDelete, deleteCheckBox, editCh
                     </Card.Body>
                 </Card>
             </NavLink>
+            <Toast ref={toast} />
         </>
     );
 };

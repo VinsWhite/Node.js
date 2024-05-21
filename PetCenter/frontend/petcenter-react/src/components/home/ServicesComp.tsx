@@ -1,4 +1,4 @@
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Form } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -12,6 +12,7 @@ export default function ServicesComp() {
     const [loading, setLoading] = useState<boolean>(true);
     const [deleteCheckBox, setDeleteCheckBox] = useState<boolean>(false);
     const [editCheckBox, setEditCheckBox] = useState<boolean>(false);
+    const [searchQuery, setSearchQuery] = useState<string>('')
     
     useEffect(() => {
         async function fetchData() {
@@ -34,36 +35,54 @@ export default function ServicesComp() {
     }, []);
 
     const handleDeletePet = (petId: number) => {
-        // Filtra i pet rimuovendo quello con l'ID corrispondente
         const updatedPets = pets.filter(pet => pet._id !== petId);
-        setPets(updatedPets); // Aggiorna lo stato con i pet aggiornati
+        setPets(updatedPets);
     };
 
     const handleUpdatePet = (updatedPet: Pet) => {
         setPets(pets => pets.map(pet => pet._id === updatedPet._id ? updatedPet : pet));
     };
+
+    const filteredPets = pets.filter(pet =>
+        pet.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
     
 
     return (
         <>  
             <div className="p-5">
-                <h2 className="fw-bold text-services">cards <NavLink className='text-decoration-none text-dark' to='/create'><Plus /></NavLink> </h2>
+                <h2 className="fw-bold text-services">pets <NavLink className='text-decoration-none text-dark' to='/create'><Plus /></NavLink> </h2>
             </div>
 
             <Container className="my-3">
-                <p 
-                    className={`bg-light border p-1 rounded-2 mb-2 d-inline-block delete ${editCheckBox ? 'disabled' : ''}`}
-                    onClick={() => setDeleteCheckBox(!deleteCheckBox)}
-                >
-                    Delete
-                </p>
+                <div className="d-flex justify-content-between">
+                    <div>
+                        <p 
+                            className={`bg-light border p-1 rounded-2 mb-2 d-inline-block delete ${editCheckBox ? 'disabled' : ''}`}
+                            onClick={() => setDeleteCheckBox(!deleteCheckBox)}
+                        >
+                            Delete
+                        </p>
 
-                <p 
-                    className={`bg-light border p-1 rounded-2 mb-2 d-inline-block edit ms-2 ${deleteCheckBox ? 'disabled' : ''}`}
-                    onClick={() => setEditCheckBox(!editCheckBox)}
-                >
-                    Edit
-                </p>
+                        <p 
+                            className={`bg-light border p-1 rounded-2 mb-2 d-inline-block edit ms-2 ${deleteCheckBox ? 'disabled' : ''}`}
+                            onClick={() => setEditCheckBox(!editCheckBox)}
+                        >
+                            Edit
+                        </p>
+                    </div>
+                    <div>
+                        <Form className="d-flex">
+                            <Form.Control
+                                type="search"
+                                placeholder="Search pets..."
+                                className="me-2"
+                                aria-label="Search"
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                        </Form>
+                    </div>
+                </div>
                 <Row>
                     {loading && (
                         <>
@@ -78,18 +97,18 @@ export default function ServicesComp() {
                             </Col>
                         </>
                     )}
-                    {pets.length >= 1 && pets.map((pet, index) => (
+                    {filteredPets.length >= 1 && filteredPets.map((pet, index) => (
                         <Col key={index} xs={12} sm={6} md={4}>
                             <PetCard
-                                pet={pet} 
-                                editCheckBox={editCheckBox} 
-                                deleteCheckBox={deleteCheckBox} 
+                                pet={pet}
+                                editCheckBox={editCheckBox}
+                                deleteCheckBox={deleteCheckBox}
                                 onDelete={handleDeletePet}
                                 onUpdate={handleUpdatePet}
                             />
                         </Col>
                     ))}
-                    {!loading && pets.length == 0 && (
+                    {!loading && filteredPets.length === 0 && (
                         <>
                             <Container>
                                 <div className="text-center border border-dark rounded-4 p-4 services mx-3">
