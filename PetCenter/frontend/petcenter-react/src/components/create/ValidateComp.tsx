@@ -11,9 +11,12 @@ export default function ValidateComp() {
 
     const [validated, setValidated] = useState(false);
     const address: string = 'http://localhost:3000/pet';
+
     const [name, setName] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [species, setSpecies] = useState<string>('');
+    const [image, setImage] = useState<File | null>(null);
+
     const [isCreated, setIsCreated] = useState<boolean>();
     const [checked, setChecked] = useState<boolean>(false);
     const navigate = useNavigate();
@@ -27,24 +30,30 @@ export default function ValidateComp() {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const form = event.currentTarget;
-
-        if (form.checkValidity() === false) {
+    
+        if (form.checkValidity() === false || !image) { // Aggiungi la condizione per verificare se è stata selezionata un'immagine
             event.stopPropagation();
             setValidated(true);
             return;
         }
-
+    
+        const formData = new FormData(); // Crea un oggetto FormData
+        formData.append('name', name); // Aggiungi i campi del modulo all'oggetto FormData
+        formData.append('description', description);
+        formData.append('species', species);
+        formData.append('image', image); // Aggiungi l'immagine all'oggetto FormData
+    
         try {
-            const response = await axios.post(address, {
-                name: name,
-                description: description,
-                species: species
+            const response = await axios.post(address, formData, { // Invia l'oggetto FormData invece di un oggetto JSON
+                headers: {
+                    'Content-Type': 'multipart/form-data' // Imposta l'intestazione Content-Type correttamente per il caricamento del file
+                }
             });
-
+    
             setIsCreated(true);
             toast.current?.show({ severity: 'info', summary: 'Created', detail: 'Pet created successfully', life: 3000 });
             console.log(response.data);
-
+    
             if(checked) {
                 setIsCreated(false);
             } else {
@@ -59,12 +68,14 @@ export default function ValidateComp() {
             console.error(error);
             toast.current?.show({ severity: 'warn', summary: 'Rejected', detail: 'Action rejected', life: 3000 });
         }
-
+    
         setValidated(false);
         setName('');
         setDescription('');
         setSpecies('');
+        setImage(null); // Resetta anche lo stato dell'immagine dopo l'invio
     }
+    
 
     return (
         <>
@@ -122,6 +133,13 @@ export default function ValidateComp() {
                             placeholder="Enter the species..."
                             value={species}
                             onChange={(e) => setSpecies(e.target.value)}
+                        />
+                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group as={Col} md="12" controlId="validationCustom02" className="mt-4">
+                        <Form.Control
+                            type="file"
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setImage(e.target.files?.[0] ?? null)} // Gestisci il caricamento dell'immagine
                         />
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>
