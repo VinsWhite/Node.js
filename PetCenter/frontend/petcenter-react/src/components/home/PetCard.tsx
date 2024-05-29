@@ -1,10 +1,10 @@
+import React, { useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Card, Modal, Button, Form, Row, Col, InputGroup } from 'react-bootstrap';
-import { Pet } from '../../assets/interface/PetInterface';
 import { Pen, Trash } from 'react-bootstrap-icons';
 import axios from 'axios';
 import { Toast } from 'primereact/toast';
-import { useRef, useState, useEffect } from 'react';
+import { Pet } from '../../assets/interface/PetInterface';
 
 interface PetCardProps {
     pet: Pet;
@@ -18,33 +18,29 @@ const PetCard: React.FC<PetCardProps> = ({ pet, onDelete, deleteCheckBox, editCh
     const toast = useRef<Toast>(null);
     const [show, setShow] = useState<boolean>(false);
     const [validated, setValidated] = useState(false);
-
-    // state for form fields
     const [name, setName] = useState(pet.name);
     const [species, setSpecies] = useState(pet.species);
     const [description, setDescription] = useState(pet.description);
 
-    useEffect(() => {
-        if (!show) {
-            onUpdate({ ...pet, name, species, description });
-        }
-    }, [show]);
+    // Ensure the image path is constructed correctly
+    const imagePath = pet.imagePath ? pet.imagePath.split('\\').join('/') : ''; // Handle Windows path separator
+    const imageUrl = `http://localhost:3000/${imagePath}`;
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        event.stopPropagation();
-    
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
+            event.stopPropagation();
             setValidated(true);
             return;
         }
-    
+
         try {
             const response = await axios.patch(`http://localhost:3000/pet/${pet._id}`, {
                 name,
                 species,
-                description
+                description,
+                imagePath
             });
             const updatedPet = response.data;
             toast.current?.show({ severity: 'success', summary: 'Updated', detail: 'Pet updated successfully', life: 3000 });
@@ -55,15 +51,12 @@ const PetCard: React.FC<PetCardProps> = ({ pet, onDelete, deleteCheckBox, editCh
             toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Failed to update pet', life: 3000 });
         }
     };
-    
-    
 
     const handleClose = () => setShow(false);
 
     const handleDelete = async () => {
         try {
-            const response = await axios.delete(`http://localhost:3000/pet/${pet._id}`);
-            console.log('Pet deleted successfully', response.data);
+            await axios.delete(`http://localhost:3000/pet/${pet._id}`);
             toast.current?.show({ severity: 'info', summary: 'Deleted', detail: 'Pet deleted successfully', life: 3000 });
             onDelete(pet._id);
         } catch (error) {
@@ -71,9 +64,7 @@ const PetCard: React.FC<PetCardProps> = ({ pet, onDelete, deleteCheckBox, editCh
         }
     };
 
-    const handleEdit = () => {
-        setShow(true);
-    };
+    const handleEdit = () => setShow(true);
 
     return (
         <>
@@ -132,6 +123,7 @@ const PetCard: React.FC<PetCardProps> = ({ pet, onDelete, deleteCheckBox, editCh
             </Modal>
             <NavLink to="#" className="text-decoration-none">
                 <Card className={`text-center services mt-3 shadow position-relative ${editCheckBox ? 'constantWiggle' : ''} ${deleteCheckBox ? 'constantWiggle' : ''}`}>
+                    <Card.Img variant="top" src={imageUrl} />
                     <Card.Body>
                         <p onClick={handleDelete} className={`text-dark d-flex position-absolute top-0 end-0 p-1 justify-content-end ${deleteCheckBox ? 'd-block' : 'd-none'}`}>
                             <Trash />

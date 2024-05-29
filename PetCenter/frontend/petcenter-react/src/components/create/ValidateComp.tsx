@@ -43,6 +43,8 @@ export default function ValidateComp() {
         formData.append('species', species);
         formData.append('image', image); // Aggiungi l'immagine all'oggetto FormData
     
+        console.log('henry il formdata', formData)
+
         try {
             const response = await axios.post(address, formData, { // Invia l'oggetto FormData invece di un oggetto JSON
                 headers: {
