@@ -31,7 +31,7 @@ export default function ValidateComp() {
         event.preventDefault();
         const form = event.currentTarget;
     
-        if (form.checkValidity() === false || !image) { // Aggiungi la condizione per verificare se è stata selezionata un'immagine
+        if (form.checkValidity() === false) { // Aggiungi la condizione per verificare se è stata selezionata un'immagine
             event.stopPropagation();
             setValidated(true);
             return;
@@ -41,7 +41,9 @@ export default function ValidateComp() {
         formData.append('name', name); // Aggiungi i campi del modulo all'oggetto FormData
         formData.append('description', description);
         formData.append('species', species);
-        formData.append('image', image); // Aggiungi l'immagine all'oggetto FormData
+        if (image) {
+            formData.append('image', image);
+        }
     
         console.log('henry il formdata', formData)
 
@@ -141,7 +143,7 @@ export default function ValidateComp() {
                     <Form.Group as={Col} md="12" controlId="validationCustom02" className="mt-4">
                         <Form.Control
                             type="file"
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setImage(e.target.files?.[0] ?? null)} // Gestisci il caricamento dell'immagine
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setImage(e.target.files?.[0] ?? null)} 
                         />
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>

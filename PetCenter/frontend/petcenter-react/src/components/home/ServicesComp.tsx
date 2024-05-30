@@ -87,13 +87,13 @@ export default function ServicesComp() {
                     {loading && (
                         <>
                             <Col xs={12} sm={6} md={4}>
-                                <Skeleton width="22rem" height="11rem"></Skeleton>
+                                <Skeleton width="22rem" height="24rem"></Skeleton>
                             </Col>
                             <Col xs={12} sm={6} md={4}>
-                                <Skeleton width="22rem" height="11rem"></Skeleton>
+                                <Skeleton width="22rem" height="24rem"></Skeleton>
                             </Col>
                             <Col xs={12} sm={6} md={4}>
-                                <Skeleton width="22rem" height="11rem"></Skeleton>
+                                <Skeleton width="22rem" height="24rem"></Skeleton>
                             </Col>
                         </>
                     )}

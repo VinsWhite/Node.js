@@ -104,3 +104,7 @@ h5 {
   pointer-events: none;
   opacity: 0.5;
 }
+
+.card-img-top {
+  border-radius: 30%;
+}

@@ -5,6 +5,7 @@ import { Pen, Trash } from 'react-bootstrap-icons';
 import axios from 'axios';
 import { Toast } from 'primereact/toast';
 import { Pet } from '../../assets/interface/PetInterface';
+import defaultPet from '../../assets/img/defaultPet.jpg';
 
 interface PetCardProps {
     pet: Pet;
@@ -123,7 +124,13 @@ const PetCard: React.FC<PetCardProps> = ({ pet, onDelete, deleteCheckBox, editCh
             </Modal>
             <NavLink to="#" className="text-decoration-none">
                 <Card className={`text-center services mt-3 shadow position-relative ${editCheckBox ? 'constantWiggle' : ''} ${deleteCheckBox ? 'constantWiggle' : ''}`}>
-                    <Card.Img variant="top" src={imageUrl} />
+                    <div>
+                        {imagePath ? (
+                            <Card.Img variant="top" src={imageUrl} />
+                        ) : (
+                            <Card.Img variant="top" src={defaultPet} />
+                        )}
+                    </div>
                     <Card.Body>
                         <p onClick={handleDelete} className={`text-dark d-flex position-absolute top-0 end-0 p-1 justify-content-end ${deleteCheckBox ? 'd-block' : 'd-none'}`}>
                             <Trash />
@@ -133,7 +140,7 @@ const PetCard: React.FC<PetCardProps> = ({ pet, onDelete, deleteCheckBox, editCh
                         </p>
                         <Card.Title className="fw-semibold mt-3 fs-3">{pet.name}</Card.Title>
                         <Card.Text>{pet.description}</Card.Text>
-                        <Card.Text className="text-primary">{pet.species}</Card.Text>
+                        <Card.Text className="text-services fw-bold bg-light mx-5">{pet.species}</Card.Text>
                     </Card.Body>
                 </Card>
             </NavLink>
