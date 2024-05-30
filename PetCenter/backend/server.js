@@ -20,10 +20,9 @@ mongoose
     .then(() => console.log('DB connected!'))
     .catch(err => console.error('DB connection error:', err));
 
-// Configura multer per il caricamento delle immagini nella cartella 'uploads'
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, 'uploads')); // Assicurati che il percorso sia corretto
+        cb(null, path.join(__dirname, 'uploads'));
     },
     filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
@@ -32,13 +31,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Middleware di multer per il caricamento delle immagini
 app.post('/upload', upload.single('image'), (req, res) => {
-    // Ritorna il percorso dell'immagine caricata
     res.json({ imagePath: req.file.path });
 });
 
-// Middleware statico per servire file dalla cartella 'uploads'
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/pet', petRouter);

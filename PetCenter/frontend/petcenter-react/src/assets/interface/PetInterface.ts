@@ -1,4 +1,4 @@
-// interfaccia struttura dati
+// pet interface 
 export interface Pet {
     _id: number,
     name: string,

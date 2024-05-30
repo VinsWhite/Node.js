@@ -6,16 +6,16 @@ import { useNavigate } from "react-router-dom";
 import { Toast } from 'primereact/toast';
 import { Checkbox } from 'primereact/checkbox';
 import { Info } from "react-bootstrap-icons";
+import { address } from "../../assets/api/address"; // address for api request
 
 export default function ValidateComp() {
 
-    const [validated, setValidated] = useState(false);
-    const address: string = 'http://localhost:3000/pet';
+    const [validated, setValidated] = useState(false); // to validate form
 
-    const [name, setName] = useState<string>('');
+    const [name, setName] = useState<string>(''); // form datas --- from here
     const [description, setDescription] = useState<string>('');
     const [species, setSpecies] = useState<string>('');
-    const [image, setImage] = useState<File | null>(null);
+    const [image, setImage] = useState<File | null>(null); // to here
 
     const [isCreated, setIsCreated] = useState<boolean>();
     const [checked, setChecked] = useState<boolean>(false);
@@ -31,26 +31,26 @@ export default function ValidateComp() {
         event.preventDefault();
         const form = event.currentTarget;
     
-        if (form.checkValidity() === false) { // Aggiungi la condizione per verificare se è stata selezionata un'immagine
+        if (form.checkValidity() === false) { 
             event.stopPropagation();
             setValidated(true);
             return;
         }
     
-        const formData = new FormData(); // Crea un oggetto FormData
-        formData.append('name', name); // Aggiungi i campi del modulo all'oggetto FormData
+        const formData = new FormData(); 
+        formData.append('name', name); 
         formData.append('description', description);
         formData.append('species', species);
         if (image) {
             formData.append('image', image);
         }
     
-        console.log('henry il formdata', formData)
+        /* console.log('Formdata', formData) */
 
         try {
-            const response = await axios.post(address, formData, { // Invia l'oggetto FormData invece di un oggetto JSON
+            const response = await axios.post(address, formData, { 
                 headers: {
-                    'Content-Type': 'multipart/form-data' // Imposta l'intestazione Content-Type correttamente per il caricamento del file
+                    'Content-Type': 'multipart/form-data'
                 }
             });
     
@@ -77,7 +77,7 @@ export default function ValidateComp() {
         setName('');
         setDescription('');
         setSpecies('');
-        setImage(null); // Resetta anche lo stato dell'immagine dopo l'invio
+        setImage(null); // reset states after sending datas
     }
     
 
