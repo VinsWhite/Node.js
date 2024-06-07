@@ -1,5 +1,5 @@
-import { Task } from '../model/taskModel'
-import { User } from '../model/userModel'
+const { Task } = require('../model/taskModel')
+const { User } = require('../model/userModel')
 
 const getTasks = async (req, res) => {
     try {
@@ -49,8 +49,7 @@ const createATask = async (req, res) => {
 }
 
 
-const taskController = () => {
-    return { getTasks, createATask }
-}
-
-export default taskController;
+module.exports = {
+    getTasks,
+    createATask
+};

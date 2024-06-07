@@ -18,6 +18,7 @@ mongoose
     .catch((error) => console.log('💣 Error: ', error));
 
 app.use('/api/auth', require('./route/authRoutes'))
+app.use('/api/auth', require('./route/taskRoutes'))
 
 app.get("/admin", adminAuth, (req, res) => res.send("Admin Route"));
 app.get("/basic", userAuth, (req, res) => res.send("User Route"));
