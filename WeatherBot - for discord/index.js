@@ -1,6 +1,7 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 require('dotenv').config({ path: './config.env'})
 const axios = require('axios');
+const schedule = require('node-schedule');
 
 // SCRIPT DI PROVA
 
@@ -20,8 +21,16 @@ client.once('ready', () => {
     console.log('Bot is online!');
 });
 
+/* const job = schedule.scheduleJob('26 * * * *', function(message){
+    message.send('test')
+}); */
+
+const contents = ['meteo', '!meteo', 'previsioni', 'tempo']; // conditions startsWith
+
 client.on('messageCreate', async message => {
-    if (message.content.startsWith('!meteo')) {
+    const startsWithContent = contents.some(prefix => message.content.startsWith(prefix));
+
+    if (startsWithContent) {
         const args = message.content.split(' ');
         if (args.length < 2) {
             return message.reply('Per favore, specifica una città.');
