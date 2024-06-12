@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits } = require('discord.js');
+const { Client, GatewayIntentBits, EmbedBuilder  } = require('discord.js');
 require('dotenv').config({ path: './config.env'})
 const axios = require('axios');
 const schedule = require('node-schedule');
@@ -22,20 +22,12 @@ client.once('ready', () => {
     console.log('Bot is online!');
 });
 
-const job = schedule.scheduleJob('0 8 * * *', function() {
+
+
+const scheduleMessage = schedule.scheduleJob('0 8 * * *', function() {
     const channel = client.channels.cache.get(CHANNEL_ID);
     if (channel) {
-        
-        (async () => {
-            try {
-                const response = await axios.get(`http://api.openweathermap.org/data/2.5/weather?q=catania&appid=${OPENWEATHER_API_KEY}&units=metric`);
-                const weatherDescription = response.data.weather[0].description;
-                const temperature = response.data.main.temp;
-                channel.send(`Buongiorno! Oggi il tempo a Catania è ${weatherDescription} con una temperatura di ${temperature}°C.`);
-            } catch (error) {
-                console.log(error);
-            }
-        })();
+        channel.send('`Buongiorno! Sono qui a tua disposizione. Controllo la lista di azioni disponibili con **!aiuto**`')
     } else {
         console.log('Channel not found');
     }
@@ -84,12 +76,41 @@ client.on('messageCreate', async message => {
                     break; 
                 }
             }
-            
 
-            message.reply(`Il tempo a ${city}: ${temp}°C, ${description}`);
+            const embed = new EmbedBuilder()
+                    .setColor(0x0099ff) // blue
+                    .setTitle(`Meteo di ${city}`)
+                    .setDescription(`${temp}°C, ${description}`)
+                    .setTimestamp();
+
+            message.channel.send({ embeds: [embed] });
         } catch (error) {
             message.reply('Non sono riuscito a trovare le informazioni meteo per quella città.');
         }
+    } else if (message.content.startsWith('!cambia ora')) {
+        message.reply('Provo a cambiare ora...');
+    } else if (message.content.startsWith('!attiva messaggio')) {
+
+    } else if (message.content.startsWith('!help')) {
+        
+        const commands = [
+            '**!meteo + nome città**  *per richiedere le previsioni della città*',
+            '**!info**  *per ottenere più informazioni sul bot*',
+        ]
+
+        try {
+            const embed = new EmbedBuilder()
+                    .setColor(0xeb4034) // red
+                    .setTitle(`Lista azioni disponibili`)
+                    .setDescription(commands.map((i) => `- ${i}`).join("\n"))
+                    .setTimestamp();
+
+            message.channel.send({ embeds: [embed] });
+        } catch (error) {
+            message.reply('Errore! Riprovare più tardi');
+        }
+    } else if (message.content.startsWith('!info')) {
+        message.reply('**RainingBot** usa le api gratuite di Open Weather Map');
     }
 });
 
