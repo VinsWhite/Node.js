@@ -1,6 +1,0 @@
-A user could send to dbot (temporary name --> RainingBot) a "weather request".
-The bot could even transform into a personal assistant, sending reminders based on the day's forecast.
-Also, you can even integrate it with your personal calendar
-
-
-work in progress...
