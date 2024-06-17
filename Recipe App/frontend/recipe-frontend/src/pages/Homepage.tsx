@@ -1,3 +1,4 @@
+import CategoriesComp from "../components/homepage/CategoriesComp";
 import DiscoverComp from "../components/homepage/DiscoverComp";
 
 export default function Homepage() {
@@ -5,6 +6,7 @@ export default function Homepage() {
     <>
       <div className="mx-4">
         <DiscoverComp />
+        <CategoriesComp />
       </div>
     </>
   )
